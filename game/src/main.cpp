@@ -13,6 +13,7 @@ struct Ball
     Vector2 position;
     Vector2 velocity;
 	float gravity_scale;
+	bool enabled = true;
 };
 
 int main()
@@ -59,8 +60,13 @@ int main()
          
         for (Ball& ball : balls)
         {
-			ball.velocity += GRAVITY * dt * ball.gravity_scale;
+            ball.velocity += GRAVITY * dt * ball.gravity_scale;
             ball.position += ball.velocity * dt;
+
+            if (ball.position.y >= ground.y) 
+            {
+                ball.enabled = false;
+            }
         }
         
         BeginDrawing();
@@ -74,7 +80,11 @@ int main()
 
         for (const Ball& ball:balls)
         {
-            DrawCircleV(ball.position, BALL_RADIUS, SKYBLUE);
+            if (ball.enabled == true) 
+            {
+                DrawCircleV(ball.position, BALL_RADIUS, SKYBLUE);
+
+            }
         }
 
         EndDrawing();
