@@ -8,6 +8,13 @@
 constexpr float BALL_RADIUS = 25.0f;
 constexpr Vector2 GRAVITY = { 0.0f, 100.0f };
 
+struct Ball
+{
+    Vector2 position;
+    Vector2 velocity;
+	float gravity_scale;
+};
+
 int main()
 {
     InitWindow(800, 800, "Game");
@@ -35,26 +42,40 @@ int main()
 
     float ball_gravity_scale = 0.0f;
 
+	std::vector<Ball> balls;
+
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();
         if (IsKeyPressed(KEY_SPACE)) 
         {
-            ball_velocity = Vector2Rotate(Vector2UnitX, -30.0f * DEG2RAD) * 200.0f;
-			ball_gravity_scale = 1.0f;
+            Ball ball;
+
+			ball.position = ball_launch_position;
+			ball.velocity = Vector2Rotate(Vector2UnitX, -30.0f * DEG2RAD) * 200.0f;
+			ball.gravity_scale = 1.0f;
+			balls.push_back(ball);
         }
-        ball_velocity += GRAVITY * dt * ball_gravity_scale;
-		ball_position += ball_velocity * dt;
+         
+        for (Ball& ball : balls)
+        {
+			ball.velocity += GRAVITY * dt * ball.gravity_scale;
+            ball.position += ball.velocity * dt;
+        }
         
         BeginDrawing();
         ClearBackground(WHITE);
         DrawRectangleRec(ground, BEIGE);
         DrawRectangleRec(platform, GRAY);
 
-        DrawCircleV(ball_position, BALL_RADIUS, BLUE);
         DrawCircleV(ball_launch_position, BALL_RADIUS, DARKGRAY);
 
         DrawCircleV(GetMousePosition(), 20.0f, RED);
+
+        for (const Ball& ball:balls)
+        {
+            DrawCircleV(ball.position, BALL_RADIUS, SKYBLUE);
+        }
 
         EndDrawing();
     }
