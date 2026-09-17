@@ -71,7 +71,7 @@ int main()
             ball.position += ball.velocity * dt;
 
 			// Disables the ball when it hits the ground
-            if (ball.position.y >= ground.y) 
+            if (ball.position.y >= ground.y - BALL_RADIUS) 
             {
                 ball.enabled = false;
             }
